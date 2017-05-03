@@ -174,5 +174,5 @@ class resnetv1(Network):
         restorer_fc = tf.train.Saver({self._scope + "/conv1/weights": conv1_rgb})
         restorer_fc.restore(sess, pretrained_model)
 
-        sess.run(tf.assign(self._variables_to_fix[self._scope + '/conv1/weights:0'], 
+        sess.run(tf.assign(self._variables_to_fix[self._scope + '/conv1/weights:0'],
                            tf.reverse(conv1_rgb, [2])))
