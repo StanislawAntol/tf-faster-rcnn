@@ -58,9 +58,9 @@ def proposal_layer_tf(rpn_cls_prob, rpn_bbox_pred, im_info, cfg_key, anchors, nu
 
     # Pick the top region proposals
     if pre_nms_topN > 0:
-        topN = tf.minimum(scores.shape[0], pre_nms_topN)
+        topN = tf.minimum(tf.shape(scores)[0], pre_nms_topN)
     else:
-        topN = scores.shape[0]
+        topN = tf.shape(scores)[0]
     scores_topn, order = tf.nn.top_k(scores[:, 0], topN, sorted=True)
     proposals_topn = tf.gather(proposals_clip, order)
 
