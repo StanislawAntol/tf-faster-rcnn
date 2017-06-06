@@ -131,7 +131,7 @@ def postprocess(rois, bbox_pred, scores, im_info):
         cls_deltas = tf.gather(bbox_pred[:, 4 * cls_ind:4 * (cls_ind + 1)],
                                inds)
         cls_boxes = bbox_transform_inv_tf(tf.gather(boxes, inds), cls_deltas)
-        cls_boxes = clip_boxes_tf(cls_boxes, im_info[0, :2])
+        cls_boxes = clip_boxes_tf(cls_boxes, im_info[0, :2]/im_info[0, 2])
 
         keep = tf.image.non_max_suppression(cls_boxes,
                                             cls_scores,
@@ -176,7 +176,7 @@ def parse_args():
     parser.add_argument('--net', dest='demo_net', help='Network to use [vgg16 res101]',
                         choices=NETS.keys(), default='res101')
     parser.add_argument('--dataset', dest='dataset', help='Trained dataset [pascal_voc pascal_voc_0712 coco]',
-                        choices=DATASETS.keys(), default='pascal_voc_0712')
+                        choices=DATASETS.keys(), default='coco')
     args = parser.parse_args()
 
     return args
@@ -243,7 +243,7 @@ if __name__ == '__main__':
     # plt.show()
 
     # export the model to make it loadable with TF serving
-    export_path = 'tf_serving_export_coco'
+    export_path = 'tf_serving_export_{}_{}_v2'.format(demonet, dataset)
     print('Exporting trained model to', export_path)
     builder = saved_model_builder.SavedModelBuilder(export_path)
 
