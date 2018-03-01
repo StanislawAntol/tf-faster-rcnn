@@ -229,7 +229,11 @@ class Network(object):
     net_conv = self._image_to_head(is_training)
     with tf.variable_scope(self._scope, self._scope):
       # build the anchors for the image
-      self._anchor_component()
+      if is_training:
+        self._anchor_component()
+      else:
+        self._anchor_component_tf()
+
       # region proposal network
       rois = self._region_proposal(net_conv, is_training, initializer)
       # region of interest pooling
@@ -330,7 +334,8 @@ class Network(object):
         rois, _ = self._proposal_target_layer(rois, roi_scores, "rpn_rois")
     else:
       if cfg.TEST.MODE == 'nms':
-        rois, _ = self._proposal_layer(rpn_cls_prob, rpn_bbox_pred, "rois")
+        #rois, _ = self._proposal_layer(rpn_cls_prob, rpn_bbox_pred, "rois")
+        rois, _ = self._proposal_layer_tf(rpn_cls_prob, rpn_bbox_pred, "rois")
       elif cfg.TEST.MODE == 'top':
         rois, _ = self._proposal_top_layer(rpn_cls_prob, rpn_bbox_pred, "rois")
       else:

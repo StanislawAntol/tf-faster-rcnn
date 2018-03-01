@@ -1,7 +1,7 @@
 import tensorflow as tf
 import numpy as np
 
-from generate_anchors import generate_anchors
+from layer_utils.generate_anchors import generate_anchors
 
 
 def generate_anchors_pre_tf(height, width, feat_stride,
